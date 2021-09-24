@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
 let notes = [
@@ -25,6 +26,12 @@ let notes = [
 ];
 
 app.use(express.json());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'));
+
+morgan.token('type', function(req, res) {
+	console.log(req.body, 'REQ.BODY MORGAN');
+	return JSON.stringify(req.body);
+});
 
 const info = {
 	message: `phonebook has info for ${notes.length} people`,
