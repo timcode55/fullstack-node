@@ -2,8 +2,22 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
+require('dotenv').config();
+const mongoose = require('mongoose');
+const Person = require('./models/person');
 
 app.use(cors());
+
+const url = process.env.MONGODB_API_KEY;
+
+mongoose.connect(url).then((result) => {
+	console.log('DB connection was successful!');
+});
+
+const personSchema = new mongoose.Schema({
+	name: String,
+	number: String
+});
 
 let notes = [
 	{
@@ -45,9 +59,11 @@ app.get('/', (request, response) => {
 	response.send('<h1>Hello World!</h1>');
 });
 
-app.get('/api/persons', (request, response) => {
-	response.json(notes);
-});
+app.get('/api/persons', (request, response) =>
+	Person.find({}).then((notes) => {
+		response.json(notes);
+	})
+);
 
 app.post('/api/persons', (request, response) => {
 	const randomId = Math.floor(Math.random() * 10000);

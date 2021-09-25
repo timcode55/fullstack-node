@@ -37,3 +37,9 @@ if (process.argv.length < 4) {
 		mongoose.connection.close();
 	});
 }
+
+app.get('/api/notes', (request, response) => {
+	Note.find({}).then((notes) => {
+		response.json(notes);
+	});
+});
