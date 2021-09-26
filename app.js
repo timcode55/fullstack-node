@@ -8,16 +8,16 @@ const Person = require('./models/person');
 
 app.use(cors());
 
-const url = process.env.MONGODB_API_KEY;
+// const url = process.env.MONGODB_API_KEY;
 
-mongoose.connect(url).then((result) => {
-	console.log('DB connection was successful!');
-});
+// mongoose.connect(url).then((result) => {
+// 	console.log('DB connection was successful!');
+// });
 
-const personSchema = new mongoose.Schema({
-	name: String,
-	number: String
-});
+// const personSchema = new mongoose.Schema({
+// 	name: String,
+// 	number: String
+// });
 
 let notes = [
 	{
@@ -66,13 +66,17 @@ app.get('/api/persons', (request, response) =>
 );
 
 app.post('/api/persons', (request, response) => {
-	const randomId = Math.floor(Math.random() * 10000);
+	// const randomId = Math.floor(Math.random() * 10000);
 	const person = request.body;
-	console.log(person, 'REQUEST.BODY');
+	console.log(person, 'REQUEST.CONTENT');
 
 	const duplicateName = notes.find((item) => {
 		return item.name === request.body.name;
 	});
+
+	if (person === undefined) {
+		return response.status(400).json({ error: 'content missing' });
+	}
 
 	if (!person.name) {
 		return response.status(400).json({
@@ -88,25 +92,31 @@ app.post('/api/persons', (request, response) => {
 		});
 	}
 
-	const newPerson = {
-		id: randomId,
+	const newPerson = new Person({
 		name: request.body.name,
 		number: request.body.number
-	};
-	console.log(randomId, 'RANDOMID');
-	notes = notes.concat(newPerson);
-	response.json(notes);
+	});
+
+	// console.log(randomId, 'RANDOMID');
+	newPerson.save().then((savedPerson) => {
+		response.json(savedPerson);
+	});
 });
 
 app.get('/api/persons/:id', (request, response) => {
-	const personId = Number(request.params.id);
-	const note = notes.find((note) => note.id === personId);
+	// const personId = Number(request.params.id);
+	// const note = notes.find((note) => note.id === personId);
 
-	if (note) {
-		response.json(note);
-	} else {
-		response.status(404).end();
-	}
+	// if (note) {
+	// 	Note.findById(request.params.id).then(note => {
+	//     response.json(note)
+	//   })
+	// } else {
+	// 	response.status(404).end();
+	// }
+	Person.findById(request.params.id).then((person) => {
+		response.json(person);
+	});
 });
 
 app.delete('/api/persons/:id', (request, response) => {

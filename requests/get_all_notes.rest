@@ -5,7 +5,7 @@ POST http://localhost:3001/api/persons/
 content-type: application/json
 
 {
-    "name": "John Spencer",
+    "name": "Testing MongoDB",
     "number": "444-555-5555"
 }
 
