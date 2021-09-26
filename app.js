@@ -8,17 +8,6 @@ const Person = require('./models/person');
 
 app.use(cors());
 
-// const url = process.env.MONGODB_API_KEY;
-
-// mongoose.connect(url).then((result) => {
-// 	console.log('DB connection was successful!');
-// });
-
-// const personSchema = new mongoose.Schema({
-// 	name: String,
-// 	number: String
-// });
-
 let notes = [
 	{
 		id: 1,
@@ -66,7 +55,6 @@ app.get('/api/persons', (request, response) =>
 );
 
 app.post('/api/persons', (request, response) => {
-	// const randomId = Math.floor(Math.random() * 10000);
 	const person = request.body;
 	console.log(person, 'REQUEST.CONTENT');
 
@@ -97,36 +85,25 @@ app.post('/api/persons', (request, response) => {
 		number: request.body.number
 	});
 
-	// console.log(randomId, 'RANDOMID');
 	newPerson.save().then((savedPerson) => {
 		response.json(savedPerson);
 	});
 });
 
 app.get('/api/persons/:id', (request, response) => {
-	// const personId = Number(request.params.id);
-	// const note = notes.find((note) => note.id === personId);
-
-	// if (note) {
-	// 	Note.findById(request.params.id).then(note => {
-	//     response.json(note)
-	//   })
-	// } else {
-	// 	response.status(404).end();
-	// }
 	Person.findById(request.params.id).then((person) => {
 		response.json(person);
 	});
 });
 
 app.delete('/api/persons/:id', (request, response) => {
-	const personId = Number(request.params.id);
-	const persons = notes.filter((note) => note.id !== personId);
-
-	if (persons) {
-		response.json(persons);
-	} else {
-		response.status(204).end();
+	console.log(request.params.id, 'ID IN APP.DELETE');
+	try {
+		Person.findByIdAndDelete(request.params.id).then((person) => {
+			response.json(person);
+		});
+	} catch (err) {
+		console.log(err);
 	}
 });
 
