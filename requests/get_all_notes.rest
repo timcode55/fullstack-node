@@ -5,12 +5,9 @@ POST http://localhost:3001/api/persons/
 content-type: application/json
 
 {
-    "name": "Testing MongoDB",
+    "name": "Tom Spencer",
     "number": "444-555-5555"
 }
 
 ###
-DELETE http://localhost:3001/api/persons/6150c52359cc5344bc8f70cf
-
-###
-GET http://localhost:3001/api/persons/614e3f97349ee576b421f40a
+DELETE http://localhost:3001/api/persons/fsdfsd

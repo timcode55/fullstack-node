@@ -58,9 +58,7 @@ app.post('/api/persons', (request, response) => {
 	const person = request.body;
 	console.log(person, 'REQUEST.CONTENT');
 
-	const duplicateName = notes.find((item) => {
-		return item.name === request.body.name;
-	});
+	const duplicateName = Person.find({ name: person.name });
 
 	if (person === undefined) {
 		return response.status(400).json({ error: 'content missing' });
@@ -90,26 +88,50 @@ app.post('/api/persons', (request, response) => {
 	});
 });
 
-app.get('/api/persons/:id', (request, response) => {
-	Person.findById(request.params.id).then((person) => {
-		response.json(person);
-	});
+app.put('/api/persons/:id', (request, response, next) => {
+	Person.findByIdAndUpdate(request.params.id, { $set: req.body.number })
+		.then((result) => {
+			response.status(204).end();
+		})
+		.catch((error) => next(error));
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-	console.log(request.params.id, 'ID IN APP.DELETE');
-	try {
-		Person.findByIdAndDelete(request.params.id).then((person) => {
-			response.json(person);
-		});
-	} catch (err) {
-		console.log(err);
-	}
+app.get('/api/persons/:id', (request, response, next) => {
+	Person.findById(request.params.id)
+		.then((person) => {
+			if (person) {
+				response.json(person);
+			} else {
+				response.status(404).end();
+			}
+		})
+		.catch((error) => next(error));
+});
+
+app.delete('/api/persons/:id', (request, response, next) => {
+	Person.findByIdAndDelete(request.params.id)
+		.then((result) => {
+			response.status(204).end();
+		})
+		.catch((error) => next(error));
 });
 
 app.get('/info', (request, response) => {
 	response.json(info);
 });
+
+const errorHandler = (error, request, response, next) => {
+	console.error(error.message);
+
+	if (error.name === 'CastError') {
+		return response.status(400).send({ error: 'malformatted id' });
+	}
+
+	next(error);
+};
+
+// this has to be the last loaded middleware.
+app.use(errorHandler);
 
 const PORT = 3001;
 app.listen(PORT, () => {
