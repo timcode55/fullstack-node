@@ -59,6 +59,7 @@ app.post('/api/persons', (request, response) => {
 	console.log(person, 'REQUEST.CONTENT');
 
 	const duplicateName = Person.find({ name: person.name });
+	// console.log(duplicateName, 'DUPNAME');
 
 	if (person === undefined) {
 		return response.status(400).json({ error: 'content missing' });
@@ -89,8 +90,11 @@ app.post('/api/persons', (request, response) => {
 });
 
 app.put('/api/persons/:id', (request, response, next) => {
-	Person.findByIdAndUpdate(request.params.id, { $set: req.body.number })
+	console.log(request.body, 'REQ.BODY IN PUT REQUEST');
+	console.log(request.params.id, 'id IN PUT REQUEST');
+	Person.findOneAndUpdate({ name: request.body.name }, { $set: { number: request.body.number } }, { new: true })
 		.then((result) => {
+			console.log(result, 'RESULT');
 			response.status(204).end();
 		})
 		.catch((error) => next(error));
