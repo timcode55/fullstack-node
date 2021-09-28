@@ -10,4 +10,12 @@ content-type: application/json
 }
 
 ###
-DELETE http://localhost:3001/api/persons/fsdfsd
+DELETE http://localhost:3001/api/persons/fsfs
+
+###
+PUT  http://localhost:3001/api/persons/61522ac3cf29e535787fe9fd 
+content-type: application/json
+
+{
+    "number": "444-555-5555"
+}
