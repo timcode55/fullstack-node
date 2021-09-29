@@ -1,23 +1,34 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+// require('dotenv').config();
+// const uniqueValidator = require('mongoose-unique-validator');
 
-const url = process.env.MONGODB_API_KEY;
+// const url = process.env.MONGODB_API_KEY;
 
-console.log('connecting to', url);
+// console.log('connecting to', url);
 
-mongoose
-	.connect(url)
-	.then((result) => {
-		console.log('connected to MongoDB');
-	})
-	.catch((error) => {
-		console.log('error connecting to MongoDB:', error.message);
-	});
+// mongoose
+// 	.connect(url)
+// 	.then((result) => {
+// 		console.log('connected to MongoDB');
+// 	})
+// 	.catch((error) => {
+// 		console.log('error connecting to MongoDB:', error.message);
+// 	});
 
 const personSchema = new mongoose.Schema({
-	name: String,
-	number: String
+	name: {
+		type: String,
+		minLength: 3,
+		required: true
+	},
+	number: {
+		type: String,
+		minLength: 8,
+		required: true
+	}
 });
+
+// personSchema.plugin(uniqueValidator);
 
 personSchema.set('toJSON', {
 	transform: (document, returnedObject) => {
